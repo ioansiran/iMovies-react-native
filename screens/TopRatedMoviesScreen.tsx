@@ -65,12 +65,12 @@ export default function TopRatedMoviesScreen() {
         searchIcon={{
           type: 'material-community',
           color: '#86939e',
-          name: 'share',
+          name: 'magnify',
         }}
         clearIcon={{
           type: 'material-community',
           color: '#86939e',
-          name: 'share',
+          name: 'close-circle',
         }}
         placeholder="Search Here..."
         onChangeText={(text) => {
@@ -86,7 +86,7 @@ export default function TopRatedMoviesScreen() {
       <FlatList
         ref={flatListRef}
         data={movies}
-        renderItem={({item}) => <MovieListItem {...item} />}
+        renderItem={({item}) => <MovieListItem movie={item} />}
       />
     </View>
   );

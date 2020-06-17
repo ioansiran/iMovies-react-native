@@ -63,12 +63,12 @@ export default function TopRatedTvScreen() {
         searchIcon={{
           type: 'material-community',
           color: '#86939e',
-          name: 'share',
+          name: 'magnify',
         }}
         clearIcon={{
           type: 'material-community',
           color: '#86939e',
-          name: 'share',
+          name: 'close-circle',
         }}
         platform={'android'}
         lightTheme
@@ -86,7 +86,7 @@ export default function TopRatedTvScreen() {
       <FlatList
         ref={flatListRef}
         data={shows}
-        renderItem={({item}) => <TvShowListItem {...item} />}
+        renderItem={({item}) => <TvShowListItem tvShow={item} />}
       />
     </View>
   );
