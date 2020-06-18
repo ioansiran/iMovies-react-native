@@ -1,8 +1,9 @@
 import React from 'react';
 import {TvShow} from '../model/model';
-import {Button, Card, Divider, Rating, Text} from 'react-native-elements';
+import {Button, Card, Divider, Text} from 'react-native-elements';
 import {StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {trimByWord} from '../helpers/text';
 
 function TvShowListItem({tvShow}: {tvShow: TvShow}) {
   const navigation = useNavigation();
@@ -11,7 +12,6 @@ function TvShowListItem({tvShow}: {tvShow: TvShow}) {
       tvShow: tvShow,
     });
   };
-
   return (
     <Card
       title={tvShow.name}
@@ -21,7 +21,7 @@ function TvShowListItem({tvShow}: {tvShow: TvShow}) {
         <Text>{tvShow.popularity} viewers </Text>
       </View>
       <Divider style={styles.divider} />
-      <Text style={{marginBottom: 10}}>{tvShow.overview}</Text>
+      <Text style={{marginBottom: 10}}>{trimByWord(tvShow.overview)}</Text>
       <Button type={'clear'} title={'Read more'} onPress={readMore} />
     </Card>
   );

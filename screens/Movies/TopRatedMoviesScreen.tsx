@@ -1,23 +1,26 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {Api} from '../services/Api';
-import {TvShow} from '../model/model';
+import {Api} from '../../services/Api';
+import {Movie} from '../../model/model';
+import MovieListItem from '../../components/MovieListItem';
 import {SearchBar} from 'react-native-elements';
-import TvShowListItem from '../components/TvShowListItem';
-export default function TopRatedTvScreen() {
-  const [shows, setShows] = useState([]);
+
+export default function TopRatedMoviesScreen() {
+  const [movies, setMovies] = useState([]);
   const [search, setSearch] = useState('');
-  let flatListRef = useRef(null);
   const [loading, setLoading] = useState(false);
+
+  let flatListRef = useRef(null);
+
   const searchRequest = (text: string) => {
     setLoading(true);
-    Api.searchAllTvShows(text)
+    Api.searchAllMovies(text)
       .then((results) => {
-        setShows(
-          results.results.map((tvShow: TvShow) => {
+        setMovies(
+          results.results.map((movie: Movie) => {
             return {
-              key: `${tvShow.id}`,
-              ...tvShow,
+              key: `${movie.id}`,
+              ...movie,
             };
           }),
         );
@@ -27,39 +30,42 @@ export default function TopRatedTvScreen() {
       })
       .catch((err) => console.error(err));
   };
+  const getAll = () => {
+    setLoading(true);
+    Api.getTopRatedMovies()
+      .then((responseBody) => {
+        setMovies(
+          responseBody.results.map((movie: Movie) => {
+            return {
+              key: `${movie.id}`,
+              ...movie,
+            };
+          }),
+        );
+        setLoading(false);
+        // @ts-ignore
+        flatListRef.current.scrollToOffset({animated: false, offset: 0});
+      })
+      .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (search.length !== 0) {
         searchRequest(search);
       }
-    }, 1000);
+    }, 500);
     return () => clearTimeout(timer);
   }, [search]);
-  const getAll = () => {
-    setLoading(true);
-
-    Api.getTopRatedTvShows()
-      .then((responseBody) => {
-        setShows(
-          responseBody.results.map((tvShows: TvShow) => {
-            return {
-              key: `${tvShows.id}`,
-              ...tvShows,
-            };
-          }),
-        );
-        setLoading(false);
-        // @ts-ignore
-        flatListRef.current.scrollToOffset({animated: false, offset: 0});
-      })
-      .catch((err) => console.error(err));
-  };
   useEffect(() => {
     getAll();
   }, []);
+
   return (
     <View style={styles.container}>
       <SearchBar
+        platform={'android'}
+        lightTheme
         searchIcon={{
           type: 'material-community',
           color: '#86939e',
@@ -70,8 +76,6 @@ export default function TopRatedTvScreen() {
           color: '#86939e',
           name: 'close-circle',
         }}
-        platform={'android'}
-        lightTheme
         placeholder="Search Here..."
         onChangeText={(text) => {
           setSearch(text);
@@ -85,8 +89,8 @@ export default function TopRatedTvScreen() {
       />
       <FlatList
         ref={flatListRef}
-        data={shows}
-        renderItem={({item}) => <TvShowListItem tvShow={item} />}
+        data={movies}
+        renderItem={({item}) => <MovieListItem movie={item} />}
       />
     </View>
   );

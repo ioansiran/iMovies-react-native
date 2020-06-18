@@ -13,9 +13,15 @@ export class Api {
     );
   }
 
-  static getAllGenres() {
+  static getAllMovieGenres() {
     return fetch(
       `${apiHost}/genre/movie/list?language=en&api_key=${apiKey}`,
+    ).then((response) => response.json());
+  }
+
+  static getAllTvGenres() {
+    return fetch(
+      `${apiHost}/genre/tv/list?language=en&api_key=${apiKey}`,
     ).then((response) => response.json());
   }
 

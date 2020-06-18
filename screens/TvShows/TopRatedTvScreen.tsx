@@ -1,24 +1,23 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {Api} from '../services/Api';
-import {Movie} from '../model/model';
-import MovieListItem from '../components/MovieListItem';
+import {Api} from '../../services/Api';
+import {TvShow} from '../../model/model';
 import {SearchBar} from 'react-native-elements';
-
-export default function TopRatedMoviesScreen() {
-  const [movies, setMovies] = useState([]);
+import TvShowListItem from '../../components/TvShowListItem';
+export default function TopRatedTvScreen() {
+  const [shows, setShows] = useState([]);
   const [search, setSearch] = useState('');
   let flatListRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const searchRequest = (text: string) => {
     setLoading(true);
-    Api.searchAllMovies(text)
+    Api.searchAllTvShows(text)
       .then((results) => {
-        setMovies(
-          results.results.map((movie: Movie) => {
+        setShows(
+          results.results.map((tvShow: TvShow) => {
             return {
-              key: `${movie.id}`,
-              ...movie,
+              key: `${tvShow.id}`,
+              ...tvShow,
             };
           }),
         );
@@ -33,18 +32,19 @@ export default function TopRatedMoviesScreen() {
       if (search.length !== 0) {
         searchRequest(search);
       }
-    }, 500);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [search]);
   const getAll = () => {
     setLoading(true);
-    Api.getTopRatedMovies()
+
+    Api.getTopRatedTvShows()
       .then((responseBody) => {
-        setMovies(
-          responseBody.results.map((movie: Movie) => {
+        setShows(
+          responseBody.results.map((tvShows: TvShow) => {
             return {
-              key: `${movie.id}`,
-              ...movie,
+              key: `${tvShows.id}`,
+              ...tvShows,
             };
           }),
         );
@@ -60,8 +60,6 @@ export default function TopRatedMoviesScreen() {
   return (
     <View style={styles.container}>
       <SearchBar
-        platform={'android'}
-        lightTheme
         searchIcon={{
           type: 'material-community',
           color: '#86939e',
@@ -72,6 +70,8 @@ export default function TopRatedMoviesScreen() {
           color: '#86939e',
           name: 'close-circle',
         }}
+        platform={'android'}
+        lightTheme
         placeholder="Search Here..."
         onChangeText={(text) => {
           setSearch(text);
@@ -85,8 +85,8 @@ export default function TopRatedMoviesScreen() {
       />
       <FlatList
         ref={flatListRef}
-        data={movies}
-        renderItem={({item}) => <MovieListItem movie={item} />}
+        data={shows}
+        renderItem={({item}) => <TvShowListItem tvShow={item} />}
       />
     </View>
   );
