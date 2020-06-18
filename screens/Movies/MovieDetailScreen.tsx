@@ -26,7 +26,7 @@ function MovieDetailScreen({route, navigation}) {
       );
     });
     setMovieGenres(genreNames);
-  }, []);
+  }, [AllGenres, movie.genre_ids]);
   return (
     <ScrollView>
       <Card
